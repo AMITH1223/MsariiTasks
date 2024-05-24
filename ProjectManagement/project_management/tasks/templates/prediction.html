@@ -1,0 +1,43 @@
+{%load static%}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Dropdown UI</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Alpine.js -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.10.3/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="w-full max-w-xs mx-auto">
+        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="POST" action="{% url 'namedata' %}">
+            {% csrf_token %}
+            <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Select Username:</label>
+            <div x-data="{ open: false, selectedUser: '' }" class="relative">
+                <input type="hidden" name="selected_user" x-model="selectedUser">
+                <button @click="open = !open" type="button" class="bg-gray-200 border border-gray-300 text-gray-700 py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline">
+                    <span x-text="selectedUser || 'Choose a user'"></span>
+                    <svg class="w-4 h-4 inline-block ml-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"></path>
+                    </svg>
+                </button>
+                <div x-show="open" @click.away="open = false" class="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg">
+                    <ul class="py-1">
+                        {% for user_data in unique_user_data %}
+                            <li>
+                                <a href="#" @click.prevent="selectedUser = '{{ user_data.name }}'; open = false" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                    {{ user_data.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <br><br>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+        </form>
+        
+    </div>
+</body>
+</html>
